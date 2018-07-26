@@ -165,7 +165,7 @@ public:
             LOG(level) << "[TID " << PAD(Logger::GetPid(), Logger::TID_LEN)    \
                        << "][" << std::put_time(gmtime(&curTime), "%H:%M:%S")  \
                        << "]["                                                 \
-                       << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN)        \
+                       << __FILE__ << " " << __LINE__ << " " << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN)        \
                        << "] " << msg;                                         \
         }                                                                      \
         else                                                                   \
@@ -185,7 +185,7 @@ public:
             LOG(level) << "[TID " << PAD(Logger::GetPid(), Logger::TID_LEN)    \
                        << "][" << std::put_time(gmtime(&curTime), "%H:%M:%S")  \
                        << "]["                                                 \
-                       << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN) << "]" \
+                       << __FILE__ << " " << __LINE__ << " " << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN) << "]" \
                        << "[Epoch " << epoch << "] " << msg;                   \
         }                                                                      \
         else                                                                   \
@@ -211,7 +211,7 @@ public:
                            << PAD(Logger::GetPid(), Logger::TID_LEN) << "]["   \
                            << std::put_time(gmtime(&curTime), "%H:%M:%S")      \
                            << "]["                                             \
-                           << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN)    \
+                           << __FILE__ << " " << __LINE__ << " " << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN)    \
                            << "] " << msg << " (Len=" << (payload).size()      \
                            << "): " << payload_string.get() << "...";          \
             }                                                                  \
@@ -221,7 +221,7 @@ public:
                            << PAD(Logger::GetPid(), Logger::TID_LEN) << "]["   \
                            << std::put_time(gmtime(&curTime), "%H:%M:%S")      \
                            << "]["                                             \
-                           << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN)    \
+                           << __FILE__ << " " << __LINE__ << " " << LIMIT(__FUNCTION__, Logger::MAX_FUNCNAME_LEN)    \
                            << "] " << msg << " (Len=" << (payload).size()      \
                            << "): " << payload_string.get();                   \
             }                                                                  \

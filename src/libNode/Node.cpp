@@ -375,11 +375,12 @@ Transaction CreateValidTestingTransaction(PrivKey& fromPrivKey,
     unsigned int version = 0;
     auto nonce = 0;
 
-    // LOG_GENERAL("fromPrivKey " << fromPrivKey << " / fromPubKey " << fromPubKey
-    // << " / toAddr" << toAddr);
+    // LOG_GENERAL(INFO， "fromPrivKey " << fromPrivKey << " / fromPubKey " << fromPubKey << " / toAddr" << toAddr);
 
     Transaction txn(version, nonce, toAddr, make_pair(fromPrivKey, fromPubKey),
                     amount, 1, 1, {}, {});
+
+    LOG_GENERAL(INFO, "txn is created");
 
     // std::vector<unsigned char> buf;
     // txn.SerializeWithoutSignature(buf, 0);
@@ -504,24 +505,59 @@ bool Node::ProcessCreateTransaction(const vector<unsigned char>& message,
 
     // for (auto nTxn = 0u; nTxn < nTxnPerAccount; nTxn += nTxnDelta)
     // {
-    unsigned int count = 0;
-    for (auto& privKeyHexStr : GENESIS_KEYS)
-    {
-        auto privKeyBytes{DataConversion::HexStrToUint8Vec(privKeyHexStr)};
-        auto privKey = PrivKey{privKeyBytes, 0};
-        auto pubKey = PubKey{privKey};
-        auto addr = Account::GetAddressFromPublicKey(pubKey);
-        auto txns = GenTransactionBulk(privKey, pubKey, nTxnPerAccount);
-        m_nRemainingPrefilledTxns += txns.size();
-        {
-            lock_guard<mutex> lg{m_mutexPrefilledTxns};
-            auto& txnsDst = m_prefilledTxns[addr];
-            txnsDst.insert(txnsDst.end(), txns.begin(), txns.end());
-        }
-        count++;
-        if (count == 1)
-            break;
+
+    LOG_GENERAL(INFO, "nTxnPerAccount: " << nTxnPerAccount);
+
+    LOG_GENERAL(INFO, "GENESIS_KEYS size: " << GENESIS_KEYS.size());
+
+
+    auto privKeyBytes{DataConversion::HexStrToUint8Vec("4049720BC74FF4267622C79373964687EC50CE9ED6232405ADD1CBBE2590E4AD")};
+    auto privKey = PrivKey{privKeyBytes, 0};
+    auto pubKey = PubKey{privKey};
+    auto addr = Account::GetAddressFromPublicKey(pubKey);
+    LOG_GENERAL(INFO, "privKey: " << privKey.m_d.get());
+    LOG_GENERAL(INFO, "pubKey: " << pubKey.m_P.get());
+    LOG_GENERAL(INFO, "addr: " << addr.hex());
+    auto txns = GenTransactionBulk(privKey, pubKey, nTxnPerAccount);
+    LOG_GENERAL(INFO, "txns size is: " << txns.size());
+    m_nRemainingPrefilledTxns += txns.size();
+    auto& txnsDst = m_prefilledTxns[addr];
+    txnsDst.insert(txnsDst.end(), txns.begin(), txns.end());
+    LOG_GENERAL(INFO, "txnsDst size is: " << txnsDst.size());
+
+    for (int i = 0; i  < txns.size(); i++) {
+        LOG_GENERAL(INFO, "Transaction info");
+        LOG_GENERAL(INFO, "Amount: " << txns.at(i).GetAmount());
+        LOG_GENERAL(INFO, "PubKey: " << txns.at(i).GetSenderPubKey());
+        LOG_GENERAL(INFO, "ToAddr: " << txns.at(i).GetToAddr());
     }
+
+    //{
+        //lock_guard<mutex> g(m_mutexCreatedTransactions);
+        //m_createdTransactions.insert(m_createdTransactions.end(), txnsDst.begin(), txnsDst.end());
+    //}
+
+        /*
+        unsigned int count = 0;
+        for (auto& privKeyHexStr : GENESIS_KEYS)
+        {
+            auto privKeyBytes{DataConversion::HexStrToUint8Vec(privKeyHexStr)};
+            auto privKey = PrivKey{privKeyBytes, 0};
+            auto pubKey = PubKey{privKey};
+            auto addr = Account::GetAddressFromPublicKey(pubKey);
+            auto txns = GenTransactionBulk(privKey, pubKey, nTxnPerAccount);
+            LOG_GENERAL(INFO, "txns: " << txns.data());
+            m_nRemainingPrefilledTxns += txns.size();
+            {
+                lock_guard<mutex> lg{m_mutexPrefilledTxns};
+                auto& txnsDst = m_prefilledTxns[addr];
+                txnsDst.insert(txnsDst.end(), txns.begin(), txns.end());
+            }
+            count++;
+            if (count == 1)
+                break;
+        }
+         */
     // LOG_GENERAL("prefilled " << (nTxn + nTxnDelta) * GENESIS_KEYS.size()
     // << " txns");
 
@@ -531,9 +567,9 @@ bool Node::ProcessCreateTransaction(const vector<unsigned char>& message,
     // txnToCreate.begin(), txnToCreate.end());
     // }
 
-    LOG_GENERAL(INFO,
-                "Finished prefilling " << nTxnPerAccount * GENESIS_KEYS.size()
-                                       << " transactions");
+    //LOG_GENERAL(INFO,
+    //            "Finished prefilling " << nTxnPerAccount * GENESIS_KEYS.size()
+    //                                   << " transactions");
 
     return true;
 #endif // IS_LOOKUP_NODE

@@ -56,15 +56,16 @@ ReadAccountsFromConstantsFile(std::string propName)
 {
     auto pt = PTree::GetInstance();
     std::vector<std::string> result;
-    for (auto& acc : pt.get_child("node.accounts"))
-    {
+    for (auto& acc : pt.get_child("node.accounts")) {
         auto child = acc.second.get_optional<std::string>(propName);
+
         if (child)
         {
             // LOG_GENERAL("constants " << child.get());
             result.push_back(child.get());
         }
     }
+
     return result;
 }
 
