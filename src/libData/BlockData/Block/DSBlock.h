@@ -33,6 +33,8 @@ class DSBlock : public BlockBase
     DSBlockHeader m_header;
 
 public:
+    void dump();
+
     /// Default constructor.
     DSBlock(); // creates a dummy invalid placeholder block -- blocknum is maxsize of uint256
 
