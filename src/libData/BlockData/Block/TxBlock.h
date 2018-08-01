@@ -39,8 +39,6 @@ class TxBlock : public BlockBase
     std::vector<uint32_t> m_shardIDs;
 
 public:
-    void dump();
-
     /// Default constructor.
     TxBlock(); // creates a dummy invalid placeholder block -- blocknum is maxsize of uint256
 
