@@ -61,10 +61,10 @@
         <INPUT_CODE>input.scilla</INPUT_CODE>
     </smart_contract>
     <accounts>
-	<public_key>022B1129DA7CD6B8BB928ACA5BD43AD2FA901373C7AEC38B8A675F0BE612652FB7</public_key>
-	<private_key>4049720BC74FF4267622C79373964687EC50CE9ED6232405ADD1CBBE2590E4AD</private_key>
-        <account>
-            <wallet_address>e35ce1c3c816244ea312c5c8077ca81625c59f8e</wallet_address>
+	<account>
+		<private_key>4049720BC74FF4267622C79373964687EC50CE9ED6232405ADD1CBBE2590E4AD</private_key>
+		<public_key>022B1129DA7CD6B8BB928ACA5BD43AD2FA901373C7AEC38B8A675F0BE612652FB7</public_key>
+		<wallet_address>e35ce1c3c816244ea312c5c8077ca81625c59f8e</wallet_address>
         </account>
     </accounts>
     <lookups>
