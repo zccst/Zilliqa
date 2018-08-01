@@ -62,14 +62,18 @@ endif(IS_LOOKUP_NODE)
 
 add_compile_options(-Wall)
 add_compile_options(-Werror)
-# add_compile_options(-Wextra) #TODO: enable it
+add_compile_options(-Wextra)
 
 if (ENABLE_COVERAGE AND CMAKE_COMPILER_IS_GNUCXX)
+    if (NOT TESTS)
+        message(FATAL_ERROR "TESTS is not ON")
+    endif()
     include(CodeCoverage)
     add_compile_options(--coverage)
     link_libraries(--coverage)
     add_custom_target(ctest COMMAND ${CMAKE_CTEST_COMMAND})
-    setup_target_for_coverage(${PROJECT_NAME}_coverage ctest coverage)
+    # TODO: remove the hardcoded number in -j option
+    setup_target_for_coverage(${PROJECT_NAME}_coverage ctest coverage "-j2;--output-on-failure")
 endif()
 
 add_subdirectory (src)

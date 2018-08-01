@@ -68,6 +68,9 @@ public:
 
     /// Greater-than comparison operator.
     bool operator>(const DSBlock& block) const;
+
+    void dump();
+
 };
 
 #endif // __DSBLOCK_H__

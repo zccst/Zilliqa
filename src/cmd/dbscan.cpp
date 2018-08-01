@@ -21,6 +21,14 @@ using namespace boost::multiprecision;
 int main(int argc, const char* argv[])
 {
 
+    int tmpargc = argc;
+    const char** tmpargv = argv;
+
+    if (tmpargc == 0 && tmpargv == 0) {
+        tmpargc = 0;
+    }
+
+
 //    bool result;
 
 //    printf("blocked\n");
