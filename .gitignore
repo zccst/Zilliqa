@@ -93,3 +93,4 @@ build_lookup
 
 # CMake files
 compile_commands.json
+cloud

@@ -28,258 +28,40 @@ using namespace std;
 
 bool ConsensusLeader::CheckState(Action action)
 {
-    bool result = true;
+    static const std::multimap<ConsensusCommon::State, Action> ACTIONS_FOR_STATE
+        = {{INITIAL, SEND_ANNOUNCEMENT},
+           {INITIAL, PROCESS_COMMITFAILURE},
+           {ANNOUNCE_DONE, PROCESS_COMMIT},
+           {ANNOUNCE_DONE, PROCESS_COMMITFAILURE},
+           {CHALLENGE_DONE, PROCESS_RESPONSE},
+           {CHALLENGE_DONE, PROCESS_COMMITFAILURE},
+           {COLLECTIVESIG_DONE, PROCESS_FINALCOMMIT},
+           {COLLECTIVESIG_DONE, PROCESS_COMMITFAILURE},
+           {FINALCHALLENGE_DONE, PROCESS_FINALRESPONSE},
+           {FINALCHALLENGE_DONE, PROCESS_COMMITFAILURE},
+           {DONE, PROCESS_COMMITFAILURE}};
 
-    switch (action)
+    bool found = false;
+
+    for (auto pos = ACTIONS_FOR_STATE.lower_bound(m_state);
+         pos != ACTIONS_FOR_STATE.upper_bound(m_state); pos++)
     {
-    case SEND_ANNOUNCEMENT:
-        switch (m_state)
+        if (pos->second == action)
         {
-        case INITIAL:
-            break;
-        case ANNOUNCE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing announce but announce already done");
-            result = false;
-            break;
-        case CHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing announce but challenge already done");
-            result = false;
-            break;
-        case COLLECTIVESIG_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing announce but collectivesig already done");
-            result = false;
-            break;
-        case FINALCHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing announce but finalchallenge already done");
-            result = false;
-            break;
-        case DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing announce but consensus already done");
-            result = false;
-            break;
-        case ERROR:
-            LOG_GENERAL(WARNING,
-                        "Processing announce but receiving "
-                        "ERROR message.");
-            result = false;
-            break;
-        default:
-            LOG_GENERAL(WARNING, "Unrecognized or error state");
-            result = false;
+            found = true;
             break;
         }
-        break;
-    case PROCESS_COMMIT:
-        switch (m_state)
-        {
-        case INITIAL:
-            LOG_GENERAL(WARNING, "Processing commit but announce not yet done");
-            result = false;
-            break;
-        case ANNOUNCE_DONE:
-            break;
-        case CHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing commit but challenge already done");
-            result = false;
-            // LOG_GENERAL(INFO, "Processing redundant commit messages");
-            break;
-        case COLLECTIVESIG_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing commit but collectivesig already done");
-            result = false;
-            break;
-        case FINALCHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing commit but finalchallenge already done");
-            result = false;
-            break;
-        case DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing commit but consensus already done");
-            result = false;
-            break;
-        case ERROR:
-            LOG_GENERAL(WARNING,
-                        "Processing commit but receiving "
-                        "ERROR message.");
-            result = false;
-            break;
-        default:
-            LOG_GENERAL(WARNING, "Unrecognized or error state");
-            result = false;
-            break;
-        }
-        break;
-    case PROCESS_RESPONSE:
-        switch (m_state)
-        {
-        case INITIAL:
-            LOG_GENERAL(WARNING,
-                        "Processing response but announce not yet done");
-            result = false;
-            break;
-        case ANNOUNCE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing response but challenge not yet done");
-            result = false;
-            break;
-        case CHALLENGE_DONE:
-            break;
-        case COLLECTIVESIG_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing response but collectivesig already done");
-            result = false;
-            break;
-        case FINALCHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing response but finalchallenge already done");
-            result = false;
-            break;
-        case DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing response but consensus already done");
-            result = false;
-            break;
-        case ERROR:
-            LOG_GENERAL(WARNING,
-                        "Processing response but receiving "
-                        "ERROR message.");
-            result = false;
-            break;
-        default:
-            LOG_GENERAL(WARNING, "Unrecognized or error state");
-            result = false;
-            break;
-        }
-        break;
-    case PROCESS_FINALCOMMIT:
-        switch (m_state)
-        {
-        case INITIAL:
-            LOG_GENERAL(WARNING,
-                        "Processing finalcommit but announce not yet done");
-            result = false;
-            break;
-        case ANNOUNCE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalcommit but challenge not yet done");
-            result = false;
-            break;
-        case CHALLENGE_DONE:
-            LOG_GENERAL(
-                WARNING,
-                "Processing finalcommit but collectivesig not yet done");
-            result = false;
-            break;
-        case COLLECTIVESIG_DONE:
-            break;
-        case FINALCHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalcommit but finalchallenge "
-                        "already done");
-            result = false;
-            break;
-        case DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalcommit but consensus already done");
-            result = false;
-            break;
-        case ERROR:
-            LOG_GENERAL(WARNING,
-                        "Processing finalcommit but receiving "
-                        "ERROR message.");
-            result = false;
-            break;
-        default:
-            LOG_GENERAL(WARNING, "Unrecognized or error state");
-            result = false;
-            break;
-        }
-        break;
-    case PROCESS_FINALRESPONSE:
-        switch (m_state)
-        {
-        case INITIAL:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but announce not yet done");
-            result = false;
-            break;
-        case ANNOUNCE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but challenge not yet done");
-            result = false;
-            break;
-        case CHALLENGE_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but collectivesig not "
-                        "yet done");
-            result = false;
-            break;
-        case COLLECTIVESIG_DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but finalchallenge "
-                        "not yet done");
-            result = false;
-            break;
-        case FINALCHALLENGE_DONE:
-            break;
-        case DONE:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but consensus already done");
-            result = false;
-            break;
-        case ERROR:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but receiving "
-                        "ERROR message.");
-            result = false;
-            break;
-        default:
-            LOG_GENERAL(WARNING, "Unrecognized or error state");
-            result = false;
-            break;
-        }
-        break;
-    case PROCESS_COMMITFAILURE:
-        switch (m_state)
-        {
-        case INITIAL:
-            break;
-        case ANNOUNCE_DONE:
-            break;
-        case CHALLENGE_DONE:
-            break;
-        case COLLECTIVESIG_DONE:
-            break;
-        case FINALCHALLENGE_DONE:
-            break;
-        case DONE:
-            break;
-        case ERROR:
-            LOG_GENERAL(WARNING,
-                        "Processing finalresponse but receiving "
-                        "ERROR message.");
-            result = false;
-            break;
-        default:
-            LOG_GENERAL(WARNING, "Unrecognized or error state");
-            result = false;
-            break;
-        }
-        break;
-    default:
-        LOG_GENERAL(WARNING, "Unrecognized action");
-        result = false;
-        break;
     }
 
-    return result;
+    if (!found)
+    {
+        LOG_GENERAL(WARNING,
+                    "Action " << GetActionString(action)
+                              << " not allowed in state " << GetStateString());
+        return false;
+    }
+
+    return true;
 }
 
 bool ConsensusLeader::ProcessMessageCommitCore(
@@ -396,8 +178,8 @@ bool ConsensusLeader::ProcessMessageCommitCore(
         // 33-byte commit
         if (m_commitCounter < m_numForConsensus)
         {
-            m_commitPoints.push_back(
-                CommitPoint(commit, curr_offset - COMMIT_POINT_SIZE));
+            m_commitPoints.emplace_back(commit,
+                                        curr_offset - COMMIT_POINT_SIZE);
             m_commitPointMap.at(backup_id)
                 = CommitPoint(commit, curr_offset - COMMIT_POINT_SIZE);
             m_commitMap.at(backup_id) = true;
@@ -434,7 +216,7 @@ bool ConsensusLeader::ProcessMessageCommitCore(
 
                 // Add the leader to the responses
                 Response r(*m_commitSecret, m_challenge, m_myPrivKey);
-                m_responseData.push_back(r);
+                m_responseData.emplace_back(r);
                 m_responseDataMap.at(m_myID) = r;
                 m_responseMap.at(m_myID) = true;
                 m_responseCounter = 1;
@@ -450,7 +232,7 @@ bool ConsensusLeader::ProcessMessageCommitCore(
                 {
                     if ((m_commitMap.at(i) == true) && (i != m_myID))
                     {
-                        commit_peers.push_back(j->second);
+                        commit_peers.emplace_back(j->second);
                     }
                 }
 
@@ -525,7 +307,7 @@ bool ConsensusLeader::ProcessMessageCommitCore(
                 {
                     if ((m_commitMap.at(i) == true) && (m_responseMap.at(i) == true))
                     {
-                        m_commitPoints.push_back(m_commitPointMap.at(i));
+                        m_commitPoints.emplace_back(m_commitPointMap.at(i));
                         m_commitCounter++;
                     }
                     if ((m_commitMap.at(i) == true) && (m_responseMap.at(i) == false))
@@ -541,7 +323,7 @@ bool ConsensusLeader::ProcessMessageCommitCore(
                     {
                         if (m_commitRedundantMap.at(i) == true)
                         {
-                            m_commitPoints.push_back(m_commitRedundantPointMap.at(i));
+                            m_commitPoints.emplace_back(m_commitRedundantPointMap.at(i));
                             m_commitCounter++;
                             m_commitMap.at(i) = true;
                             m_commitRedundantMap.at(i) = false;
@@ -577,7 +359,7 @@ bool ConsensusLeader::ProcessMessageCommitCore(
                         {
                             if (m_commitMap.at(i) == true)
                             {
-                                commit_peers.push_back(m_peerInfo.at(i));
+                                commit_peers.emplace_back(m_peerInfo.at(i));
                             }
                         }
                         P2PComm::GetInstance().SendMessage(commit_peers, challenge);
@@ -714,7 +496,7 @@ bool ConsensusLeader::ProcessMessageCommitFailure(
         //     {
         //         if (m_commitMap.at(i) == true)
         //         {
-        //             commit_peers.push_back(*j);
+        //             commit_peers.emplace_back(*j);
         //         }
         //     }
         //     P2PComm::GetInstance().SendMessage(commit_peers, challenge);
@@ -934,7 +716,7 @@ bool ConsensusLeader::ProcessMessageResponseCore(
     }
 
     // 32-byte response
-    m_responseData.push_back(tmp_response);
+    m_responseData.emplace_back(tmp_response);
     m_responseDataMap.at(backup_id) = tmp_response;
     m_responseMap.at(backup_id) = true;
     m_responseCounter++;
@@ -980,7 +762,7 @@ bool ConsensusLeader::ProcessMessageResponseCore(
 
                 // Add the leader to the commits
                 m_commitMap.at(m_myID) = true;
-                m_commitPoints.push_back(*m_commitPoint);
+                m_commitPoints.emplace_back(*m_commitPoint);
                 m_commitPointMap.at(m_myID) = *m_commitPoint;
                 m_commitCounter = 1;
 
@@ -1182,7 +964,7 @@ ConsensusLeader::ConsensusLeader(
 
     // Add the leader to the commits
     m_commitMap.at(m_myID) = true;
-    m_commitPoints.push_back(*m_commitPoint);
+    m_commitPoints.emplace_back(*m_commitPoint);
     m_commitPointMap.at(m_myID) = *m_commitPoint;
     m_commitCounter = 1;
 }
@@ -1324,4 +1106,24 @@ bool ConsensusLeader::ProcessMessage(const vector<unsigned char>& message,
     }
 
     return result;
+}
+
+#define MAKE_LITERAL_PAIR(s)                                                   \
+    {                                                                          \
+        s, #s                                                                  \
+    }
+
+map<ConsensusLeader::Action, string> ConsensusLeader::ActionStrings
+    = {MAKE_LITERAL_PAIR(SEND_ANNOUNCEMENT),
+       MAKE_LITERAL_PAIR(PROCESS_COMMIT),
+       MAKE_LITERAL_PAIR(PROCESS_RESPONSE),
+       MAKE_LITERAL_PAIR(PROCESS_FINALCOMMIT),
+       MAKE_LITERAL_PAIR(PROCESS_FINALRESPONSE),
+       MAKE_LITERAL_PAIR(PROCESS_COMMITFAILURE)};
+
+std::string ConsensusLeader::GetActionString(Action action) const
+{
+    return (ActionStrings.find(action) == ActionStrings.end())
+        ? "Unknown"
+        : ActionStrings.at(action);
 }

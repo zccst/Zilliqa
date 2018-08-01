@@ -553,7 +553,9 @@ bool AccountStoreSC<MAP>::ParseCallContractJsonOutput(const Json::Value& _json)
         }
         string vname = s["vname"].asString();
         string type = s["type"].asString();
-        string value = JSONUtils::convertJsontoStr(s["value"]);
+        string value = s["value"].isString()
+            ? s["value"].asString()
+            : JSONUtils::convertJsontoStr(s["value"]);
 
         Account* contractAccount = this->GetAccount(m_curContractAddr);
         if (vname != "_balance")
@@ -656,7 +658,7 @@ template<class MAP> void AccountStoreSC<MAP>::CommitTransferBalanceAtomic()
         }
         else
         {
-            // this->m_addressToAccount.insert(make_pair(entry.first, entry.second));
+            // this->m_addressToAccount.emplace(make_pair(entry.first, entry.second));
             this->AddAccount(entry.first, entry.second);
         }
     }
