@@ -156,6 +156,8 @@ public:
 
     /// Clean all DB
     bool ResetAll();
+
+    bool GetAllMetadata();
 };
 
 #endif // BLOCKSTORAGE_H

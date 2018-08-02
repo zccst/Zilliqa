@@ -450,3 +450,24 @@ bool BlockStorage::ResetAll()
         && ResetDB(TX_BODY) && ResetDB(TX_BODY_TMP);
 #endif
 }
+
+
+bool BlockStorage::GetAllMetadata()
+{
+    LOG_MARKER();
+    leveldb::Iterator* it = m_metadataDB.GetDB()->NewIterator(leveldb::ReadOptions());
+    for (it->SeekToFirst(); it->Valid(); it->Next())
+    {
+        string key = it->key().ToString();
+        string metadataString = it->value().ToString();
+        if (metadataString.empty())
+        {
+            LOG_GENERAL(WARNING, "Lost one block in the chain");
+            continue;
+        }
+        LOG_GENERAL(INFO, "metadata key: " << key << ", metadata val: " << metadataString);
+    }
+    delete it;
+
+    return true;
+}

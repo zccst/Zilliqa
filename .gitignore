@@ -1,5 +1,5 @@
 /cmake*
-/build
+/build*
 /.idea
 # Prerequisites
 *.d
@@ -94,3 +94,4 @@ build_lookup
 # CMake files
 compile_commands.json
 cloud
+common-00001-log.txt

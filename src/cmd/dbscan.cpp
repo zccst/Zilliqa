@@ -73,5 +73,11 @@ int main(int argc, const char* argv[])
         block->dump();
     }
 
+
+    LOG_GENERAL(INFO, "---------------------------------------------------------");
+    LOG_GENERAL(INFO, "------------------ Dump all Metadata --------------------");
+
+    BlockStorage::GetBlockStorage().GetAllMetadata();
+
     return 0;
 }
