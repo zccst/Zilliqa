@@ -14,11 +14,11 @@ node11_20 -> DS_node1_10: 发送pow1结果
 
 DS_node1_10 -> DS_node1_10: 验证pow1的结果，并用BFT达成共识，确定:\n下一轮的DS lead和一个退出DS的节点
 
-DS_node1_10 -> DS_node1_10: 出块并记录：本轮和下一轮DS lead公钥(id)，\n难度值
+DS_node1_10 -> DS_node1_10: 将DS block写入磁盘记录：\n本轮和下一轮DS lead公钥(id)，难度值
 
 DS_node1_10 -> node11_20: 广播，通知全网节点最新的DS的信息
 
-node11_20 -> node11_20: 运行pow2
+node11_20 -> node11_20: 将DS block写入磁盘，运行pow2
 node11_20 -> DS_node1_10: 发送pow2结果
 
 DS_node1_10 -> DS_node1_10: 根据pow2结果，规划sharding
@@ -32,14 +32,10 @@ node11_20 -> node11_20: 用BFT达成共识
 
 node11_20 -> DS_node1_10: 发送micro block
 
-DS_node1_10 -> DS_node1_10: 组装micro block,并用BFT达成共识
+DS_node1_10 -> DS_node1_10: 组装micro block,并用BFT达成共识，\n将final block写入磁盘
 
 node11_20 <-- DS_node1_10: 发送final block
 node11_20 -> node11_20: 将final block写入磁盘
-
-
-
-
 
 
 @enduml
