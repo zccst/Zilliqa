@@ -212,7 +212,7 @@ ConsensusUser::~ConsensusUser() {}
 bool ConsensusUser::Execute(const vector<unsigned char>& message,
                             unsigned int offset, const Peer& from)
 {
-    //LOG_MARKER();
+    LOG_MARKER();
 
     bool result = false;
 
@@ -220,7 +220,8 @@ bool ConsensusUser::Execute(const vector<unsigned char>& message,
         const vector<unsigned char>&, unsigned int, const Peer&);
 
     InstructionHandler ins_handlers[] = {
-        &ConsensusUser::ProcessSetLeader, &ConsensusUser::ProcessStartConsensus,
+        &ConsensusUser::ProcessSetLeader,
+        &ConsensusUser::ProcessStartConsensus,
         &ConsensusUser::ProcessConsensusMessage};
 
     const unsigned char ins_byte = message.at(offset);

@@ -58,7 +58,9 @@ void Zilliqa::LogSelfNodeInfo(const std::pair<PrivKey, PubKey>& key,
 }
 
 Zilliqa::Zilliqa(const std::pair<PrivKey, PubKey>& key, const Peer& peer,
-                 bool loadConfig, unsigned int syncType, bool toRetrieveHistory)
+                 bool loadConfig, // is ds or not
+                 unsigned int syncType,
+                 bool toRetrieveHistory)
     : m_pm(key, peer, loadConfig)
     , m_mediator(key, peer)
     , m_ds(m_mediator)
@@ -161,8 +163,25 @@ void Zilliqa::Dispatch(const vector<unsigned char>& message, const Peer& from)
 
         if (msg_type < msg_handlers_count)
         {
-            bool result = msg_handlers[msg_type]->Execute(
-                message, MessageOffset::INST, from);
+
+            LOG_PAYLOAD(INFO, "Message received", message, message.size());
+
+            std::unique_ptr<char[]> payload_string;
+//            Logger::GetPayloadS(message, message.size(), payload_string);
+            Logger::GetPayloadS(message, 36, payload_string);
+//            string msg = payload_string.get();
+//            payload_string = 0;
+
+
+
+            LOG_GENERAL(INFO, "message-func type: " << (unsigned int)msg_type
+                    << "-" << (unsigned int)message.at(MessageOffset::INST)
+                    << ", from peer: " << from
+                    << ", message size: " << message.size()
+//                    << ", message: " << payload_string.get()
+//                    << "..."
+            );
+            bool result = msg_handlers[msg_type]->Execute(message, MessageOffset::INST, from);
 
             if (result == false)
             {

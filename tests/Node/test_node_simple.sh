@@ -28,8 +28,9 @@ python tests/Zilliqa/test_zilliqa_local.py stop
 python tests/Zilliqa/test_zilliqa_local.py setup 20
 python tests/Zilliqa/test_zilliqa_local.py start 10
 
-sleep 30
-echo "starting..."
+echo "starting...6s"
+
+sleep 6
 
 #set primary 
 for ds in {1..10}
@@ -45,8 +46,8 @@ do
 done
 
 
-for port in {01..20}
+for port in {5001..5020}
 do
-    python tests/Zilliqa/test_zilliqa_local.py sendtxn 50$port
-done 
+    python tests/Zilliqa/test_zilliqa_local.py sendtxn $port
+done
 

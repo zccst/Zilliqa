@@ -416,8 +416,7 @@ namespace
             read_length += n;
         }
 
-        LOG_PAYLOAD(INFO, "Message received", *message,
-                    Logger::MAX_BYTES_TO_DISPLAY);
+        LOG_PAYLOAD(INFO, "Message received", *message, message_length);
 
         if (read_length != message_length)
         {

@@ -240,8 +240,10 @@ bool PeerManager::Execute(const vector<unsigned char>& message,
         const vector<unsigned char>&, unsigned int, const Peer&);
 
     InstructionHandler ins_handlers[] = {
-        &PeerManager::ProcessHello,     &PeerManager::ProcessAddPeer,
-        &PeerManager::ProcessPing,      &PeerManager::ProcessPingAll,
+        &PeerManager::ProcessHello,
+        &PeerManager::ProcessAddPeer,
+        &PeerManager::ProcessPing,
+        &PeerManager::ProcessPingAll,
         &PeerManager::ProcessBroadcast,
     };
 

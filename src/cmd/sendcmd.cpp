@@ -186,6 +186,12 @@ int main(int argc, const char* argv[])
         return -1;
     }
 
+    printf("================================\n");
+
+    for (int i = 0; i < argc; ++i) {
+        printf("sendcmd param[%d]: %s\n", i, argv[i]);
+    }
+
     const char* instruction = argv[2];
 
     const message_handler message_handlers[]

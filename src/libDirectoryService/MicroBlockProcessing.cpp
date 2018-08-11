@@ -164,6 +164,8 @@ bool DirectoryService::ProcessMicroblockSubmission(
     [[gnu::unused]] const vector<unsigned char>& message,
     [[gnu::unused]] unsigned int offset, [[gnu::unused]] const Peer& from)
 {
+    LOG_GENERAL(INFO, "func: 1-3 DirectoryService::ProcessMicroblockSubmission");
+
 #ifndef IS_LOOKUP_NODE
     // Message = [8-byte DS blocknum] [4-byte consensusid] [4-byte shard ID] [Tx microblock]
 

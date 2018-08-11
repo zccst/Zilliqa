@@ -41,6 +41,14 @@ int main(int argc, const char* argv[])
         cout << "Available commands: cmd " << endl;
     }
 
+
+
+    printf("================================\n");
+
+    for (int i = 0; i < argc; ++i) {
+        printf("sendtxn param[%d]: %s\n", i, argv[i]);
+    }
+
     uint32_t listen_port = static_cast<unsigned int>(atoi(argv[1]));
     struct in_addr ip_addr;
     inet_aton("127.0.0.1", &ip_addr);

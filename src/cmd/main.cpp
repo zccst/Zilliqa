@@ -61,6 +61,24 @@ int main(int argc, const char* argv[])
         return 0;
     }
 
+
+//    2593574CAA7B459AADAA9AC2551EBE87316F38ED2F57EC2FC03575CD883057B9
+//    02009388E918C74E4D94D51E83A558C9CFAA1BC06CB29567C55EEE127883351001
+//    127.0.0.1
+//    5001
+//    1
+//    0
+//    1
+//
+//    printf("PrivKey: %s\n", argv[1]);
+//    printf("Pubkey: %s\n", argv[2]);
+//    printf("\n", argv[3]);
+//    printf("\n", argv[4]);
+//    printf("\n", argv[5]);
+//    printf("\n", argv[6]);
+//    printf("\n", argv[7]);
+
+
     unsigned int localPort = static_cast<unsigned int>(atoi(argv[4]));
     unique_ptr<NAT> nt;
 
@@ -110,18 +128,21 @@ int main(int argc, const char* argv[])
         return -1;
     }
 
-    Zilliqa zilliqa(make_pair(privkey, pubkey), my_network_info,
-                    atoi(argv[5]) == 1, atoi(argv[6]), atoi(argv[7]) == 1);
+    Zilliqa zilliqa(make_pair(privkey, pubkey),
+                    my_network_info,
+                    atoi(argv[5]) == 1,  // ds or not
+                    atoi(argv[6]),       // sync type
+                    atoi(argv[7]) == 1); // if load history
 
-    auto dispatcher = [&zilliqa](const vector<unsigned char>& message,
-                                 const Peer& from) mutable -> void {
-        zilliqa.Dispatch(message, from);
-    };
+    auto dispatcher
+            = [&zilliqa](const vector<unsigned char> &message, const Peer &from) mutable -> void {
+                zilliqa.Dispatch(message, from);
+            };
+
     auto broadcast_list_retriever
-        = [&zilliqa](unsigned char msg_type, unsigned char ins_type,
-                     const Peer& from) mutable -> vector<Peer> {
-        return zilliqa.RetrieveBroadcastList(msg_type, ins_type, from);
-    };
+            = [&zilliqa](unsigned char msg_type, unsigned char ins_type, const Peer &from) mutable -> vector<Peer> {
+                return zilliqa.RetrieveBroadcastList(msg_type, ins_type, from);
+            };
 
     P2PComm::GetInstance().StartMessagePump(
         my_network_info.m_listenPortHost, dispatcher, broadcast_list_retriever);

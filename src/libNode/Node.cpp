@@ -471,6 +471,8 @@ bool Node::ProcessCreateTransaction(
     [[gnu::unused]] const vector<unsigned char>& message,
     [[gnu::unused]] unsigned int offset, [[gnu::unused]] const Peer& from)
 {
+
+    LOG_GENERAL(INFO, "func: 2-2 Node::ProcessCreateTransaction");
 #ifndef IS_LOOKUP_NODE
     LOG_MARKER();
 
@@ -1096,7 +1098,8 @@ bool Node::ToBlockMessage([[gnu::unused]] unsigned char ins_byte)
 bool Node::Execute(const vector<unsigned char>& message, unsigned int offset,
                    const Peer& from)
 {
-    //LOG_MARKER();
+    LOG_MARKER();
+
 
     bool result = true;
 

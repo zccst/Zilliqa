@@ -453,6 +453,9 @@ bool DirectoryService::ProcessFinalBlockConsensus(
     [[gnu::unused]] const vector<unsigned char>& message,
     [[gnu::unused]] unsigned int offset, [[gnu::unused]] const Peer& from)
 {
+
+    LOG_GENERAL(INFO, "func: 1-4 DirectoryService::ProcessFinalBlockConsensus");
+
 #ifndef IS_LOOKUP_NODE
     LOG_MARKER();
 
