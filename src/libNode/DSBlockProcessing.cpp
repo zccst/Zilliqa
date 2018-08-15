@@ -349,7 +349,7 @@ void Node::StartFirstTxEpoch()
     {
         m_isPrimary = true;
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "sharding_func: I am leader of the sharded committee");
+                  "sharding_role_func: I am leader of the sharded committee");
 
         LOG_STATE("[IDENT][" << std::setw(15) << std::left
                              << m_mediator.m_selfPeer.GetPrintableIPAddress()
@@ -360,7 +360,7 @@ void Node::StartFirstTxEpoch()
         m_isPrimary = false;
 
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "sharding_func: I am backup member of the sharded committee");
+                  "sharding_role_func: I am backup member of the sharded committee");
 
         LOG_STATE("[SHSTU][" << setw(15) << left
                              << m_mediator.m_selfPeer.GetPrintableIPAddress()

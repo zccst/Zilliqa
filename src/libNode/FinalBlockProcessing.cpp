@@ -508,7 +508,7 @@ void Node::UpdateStateForNextConsensusRound()
     if (m_isPrimary == true)
     {
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "sharding_func: I am no longer the shard leader ");
+                  "sharding_role_func: I am no longer the shard leader ");
         m_isPrimary = false;
     }
 
@@ -519,7 +519,7 @@ void Node::UpdateStateForNextConsensusRound()
     if (m_consensusMyID == m_consensusLeaderID)
     {
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "sharding_func: I am the new shard leader ");
+                  "sharding_role_func: I am the new shard leader ");
         m_isPrimary = true;
     }
     else

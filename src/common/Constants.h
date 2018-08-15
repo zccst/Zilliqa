@@ -91,9 +91,9 @@ const std::string REMOTE_TEST_DIR = "zilliqa-test";
 const std::string PERSISTENCE_PATH = "persistence";
 const std::string TX_BODY_SUBDIR = "txBodies";
 
-const std::string DS_KICKOUT_MSG = "Epoch_func: KICKED OUT FROM DS";
-const std::string DS_LEADER_MSG = "Epoch_func: DS LEADER NOW";
-const std::string DS_BACKUP_MSG = "Epoch_func: DS BACKUP NOW";
+const std::string DS_KICKOUT_MSG = "Epoch_role_func: KICKED OUT FROM DS";
+const std::string DS_LEADER_MSG = "Epoch_role_func: DS LEADER NOW";
+const std::string DS_BACKUP_MSG = "Epoch_role_func: DS BACKUP NOW";
 
 extern const std::string SCILLA_ROOT;
 extern const std::string SCILLA_BINARY;

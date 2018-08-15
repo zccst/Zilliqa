@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ZILLIQA_TOP=$PWD
-
+NODE_NUM=8
 
 while getopts "n:b" opt; do
   case $opt in
