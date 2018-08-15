@@ -1,8 +1,9 @@
 #!/bin/bash
-git checkout -b zil master
+git branch -D zil
+git checkout -b zil 0810
 git pull https://github.com/Zilliqa/Zilliqa.git master
 
-git checkout master
+git checkout 0810
 git merge --no-ff zil
-git push origin master
+git push origin 0810
 
