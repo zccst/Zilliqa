@@ -165,8 +165,11 @@ bool DirectoryService::ProcessSetPrimary(
     {
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
                   "I am the DS committee leader");
+
         LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(),
                       DS_LEADER_MSG);
+
+        LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),  DS_LEADER_MSG);
         m_mode = PRIMARY_DS;
     }
     else
@@ -179,8 +182,11 @@ bool DirectoryService::ProcessSetPrimary(
                   "Current DS committee leader is "
                       << primary.GetPrintableIPAddress() << " at port "
                       << primary.m_listenPortHost)
-        LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(),
-                      DS_BACKUP_MSG);
+
+        LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(), DS_BACKUP_MSG);
+
+        LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),  DS_BACKUP_MSG);
+
         m_mode = BACKUP_DS;
     }
 
@@ -397,8 +403,9 @@ bool DirectoryService::FinishRejoinAsDS()
         }
     }
     // in case the recovery program is under different directory
-    LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(),
-                  DS_BACKUP_MSG);
+    LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(), DS_BACKUP_MSG);
+    LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(), DS_BACKUP_MSG);
+
     RunConsensusOnDSBlock(true);
     return true;
 }

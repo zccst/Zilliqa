@@ -53,7 +53,7 @@ void DirectoryService::StoreFinalBlockToDisk()
                                                   - 2);
 
     LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-              "Storing Tx Block Number: "
+              "db_func: Storing Tx Block Number: "
                   << m_finalBlock->GetHeader().GetBlockNum() << " with Type: "
                   << to_string(m_finalBlock->GetHeader().GetType())
                   << ", Version: " << m_finalBlock->GetHeader().GetVersion()

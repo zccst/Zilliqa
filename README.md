@@ -1,8 +1,8 @@
 # Zilliqa 
 
-## Overview
-| message-func type | handler | description | |  |  |
-| :-----------: | :------ | ------------: | :----------- | :------: | ------------: |
+## Message mapping 
+| message-func  | handler | description | |  
+| :-----------: | :------ | ------------: | :----------- |
 |	0-0	|	PeerManager::ProcessHello	 | |  |   ||
 |	0-1	|	PeerManager::ProcessAddPeer	 | |  |   ||
 |	0-2	|	PeerManager::ProcessPing	 | |  |   ||
@@ -37,16 +37,14 @@
 |	4-7	|	Lookup::ProcessSetTxBlockFromSeed	 | |  |   ||
 |	4-8	|	Lookup::ProcessGetTxBodyFromSeed	 | |  |   ||
 |	4-9	|	Lookup::ProcessSetTxBodyFromSeed	 | |  |   ||
-|	4-10	|	Lookup::ProcessGetNetworkId	 | |  |   ||
-|	4-11	|	Lookup::ProcessGetNetworkId	 | |  |   ||
-|	4-12	|	Lookup::ProcessGetStateFromSeed	 | |  |   ||
-|	4-13	|	Lookup::ProcessSetStateFromSeed	 | |  |   ||
-|	4-14	|	Lookup::ProcessSetLookupOffline	 | |  |   ||
-|	4-15	|	Lookup::ProcessSetLookupOnline	 | |  |   ||
-|	4-16	|	Lookup::ProcessGetOfflineLookups	 | |  |   ||
-|	4-17	|	Lookup::ProcessSetOfflineLookups	 | |  |   ||
-## Overview
-Zilliqa is a new blockchain platform capable of processing thousands of transactions per second with sharding built into it. With sharding| |       |   || Zilliqa has the potential to match throughput benchmarks set by traditional payment methods (such as _VISA_ and _MasterCard_). More importantly| |       |   || Zilliqa’s transaction throughput increases (roughly) linearly with its network size.
+|	4-10|	Lookup::ProcessGetNetworkId	 | |  |   ||
+|	4-11|	Lookup::ProcessGetNetworkId	 | |  |   ||
+|	4-12|	Lookup::ProcessGetStateFromSeed	 | |  |   ||
+|	4-13|	Lookup::ProcessSetStateFromSeed	 | |  |   ||
+|	4-14|	Lookup::ProcessSetLookupOffline	 | |  |   ||
+|	4-15|	Lookup::ProcessSetLookupOnline	 | |  |   ||
+|	4-16|	Lookup::ProcessGetOfflineLookups	 | |  |   ||
+|	4-17|	Lookup::ProcessSetOfflineLookups	 | |  |   ||
 
 ## _D24_ Testnet  
 * [Block Explorer](https://explorer.zilliqa.com/home)

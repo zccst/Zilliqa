@@ -92,6 +92,12 @@ class P2PComm
     ThreadPool m_RecvPool{MAXMESSAGE, "RecvPool"};
 
 public:
+
+    static std::map<std::string, std::string> funcMap;
+    static void initFuncMap();
+    static const std::string& getfunc(const std::string& key);
+
+        static uint32_t glocalPort;
     /// Returns the singleton P2PComm instance.
     static P2PComm& GetInstance();
 
@@ -120,6 +126,9 @@ public:
     /// Accept TCP connection for libevent usage
     static void ConnectionAccept(int serv_sock, short event, void* arg);
 
+    static void dumpMessage(const Peer& peer,
+                              const std::vector<unsigned char>& message,
+                              int offset, std::string context);
     /// Listens for incoming socket connections.
     void StartMessagePump(uint32_t listen_port_host, Dispatcher dispatcher,
                           broadcast_list_func broadcast_list_retriever);

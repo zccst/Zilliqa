@@ -32,6 +32,7 @@ using namespace boost::multiprecision;
 
 int main(int argc, const char* argv[])
 {
+    P2PComm::glocalPort = 2;
 
     // To use ./sendtxn [port]
     if (argc < 2)

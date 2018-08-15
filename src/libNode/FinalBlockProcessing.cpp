@@ -104,7 +104,7 @@ void Node::StoreFinalBlock(const TxBlock& txBlock)
     EraseCommittedTransactions(m_mediator.m_currentEpochNum - 2);
 
     LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-              "Storing Tx Block Number: "
+              "db_func: Storing Tx Block Number: "
                   << txBlock.GetHeader().GetBlockNum()
                   << " with Type: " << to_string(txBlock.GetHeader().GetType())
                   << ", Version: " << txBlock.GetHeader().GetVersion()
@@ -508,7 +508,7 @@ void Node::UpdateStateForNextConsensusRound()
     if (m_isPrimary == true)
     {
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "I am no longer the shard leader ");
+                  "sharding_func: I am no longer the shard leader ");
         m_isPrimary = false;
     }
 
@@ -519,7 +519,7 @@ void Node::UpdateStateForNextConsensusRound()
     if (m_consensusMyID == m_consensusLeaderID)
     {
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "I am the new shard leader ");
+                  "sharding_func: I am the new shard leader ");
         m_isPrimary = true;
     }
     else

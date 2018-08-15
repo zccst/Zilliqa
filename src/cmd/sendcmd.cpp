@@ -178,6 +178,7 @@ void process_remote_cmd(int numargs, const char* progname, const char* cmdname,
 
 int main(int argc, const char* argv[])
 {
+    P2PComm::glocalPort = 1;
     if (argc < 3)
     {
         cout << "[USAGE] " << argv[0]

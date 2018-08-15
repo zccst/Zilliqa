@@ -109,6 +109,7 @@ int main(int argc, const char* argv[])
     {
         inet_aton(argv[3], &ip_addr);
         my_network_info = Peer((uint128_t)ip_addr.s_addr, localPort);
+        P2PComm::glocalPort = localPort;
     }
 
     vector<unsigned char> tmPrivkey = DataConversion::HexStrToUint8Vec(argv[1]);

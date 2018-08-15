@@ -53,7 +53,7 @@ void Node::StoreDSBlockToDisk(const DSBlock& dsblock)
 
     m_mediator.m_dsBlockChain.AddBlock(dsblock);
     LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-              "Storing DS Block Number: "
+              "db_func: Storing DS Block Number: "
                   << dsblock.GetHeader().GetBlockNum() << " with Nonce: "
                   << dsblock.GetHeader().GetNonce() << ", Difficulty: "
                   << to_string(dsblock.GetHeader().GetDifficulty())
@@ -349,7 +349,7 @@ void Node::StartFirstTxEpoch()
     {
         m_isPrimary = true;
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "I am leader of the sharded committee");
+                  "sharding_func: I am leader of the sharded committee");
 
         LOG_STATE("[IDENT][" << std::setw(15) << std::left
                              << m_mediator.m_selfPeer.GetPrintableIPAddress()
@@ -360,7 +360,7 @@ void Node::StartFirstTxEpoch()
         m_isPrimary = false;
 
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-                  "I am backup member of the sharded committee");
+                  "sharding_func: I am backup member of the sharded committee");
 
         LOG_STATE("[SHSTU][" << setw(15) << left
                              << m_mediator.m_selfPeer.GetPrintableIPAddress()
@@ -571,6 +571,8 @@ bool Node::ProcessDSBlock(const vector<unsigned char>& message,
 
         LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(),
                       DS_LEADER_MSG);
+
+        LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(), DS_LEADER_MSG);
         LOG_STATE("[IDENT][" << std::setw(15) << std::left
                              << m_mediator.m_selfPeer.GetPrintableIPAddress()
                              << "][0     ] DSLD");

@@ -30,6 +30,11 @@ PeerStore& PeerStore::GetStore()
 
 void PeerStore::AddPeerPair(const PubKey& key, const Peer& peer)
 {
+    LOG_GENERAL(INFO, "addpeer_func with port: "
+                      << peer.m_listenPortHost
+                      << ", key: "
+                         << key );
+
     lock_guard<mutex> g(m_mutexStore);
     m_store[key] = peer;
 }

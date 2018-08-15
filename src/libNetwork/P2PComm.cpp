@@ -127,6 +127,8 @@ void P2PComm::SendMessageCore(const Peer& peer,
                               unsigned char start_byte,
                               const vector<unsigned char>& msg_hash)
 {
+    P2PComm::dumpMessage(peer, message, 0, "send message_func: ");
+
     uint32_t retry_counter = 0;
     while (!SendMessageSocketCore(peer, message, start_byte, msg_hash))
     {
@@ -762,6 +764,21 @@ void P2PComm::SendMessage(const Peer& peer,
     SendMessageCore(peer, message, START_BYTE_NORMAL, vector<unsigned char>());
 }
 
+void P2PComm::dumpMessage(const Peer& peer,
+                 const std::vector<unsigned char>& message,
+                 int offset, std::string context) {
+
+    char buf[16];
+    const unsigned char msg_type = message.at(MessageOffset::TYPE + offset);
+    const unsigned char func_type = message.at(MessageOffset::INST + offset);
+
+    sprintf(buf, "%d-%d", (unsigned int)msg_type, (unsigned int)func_type);
+    LOG_GENERAL(INFO, context << buf
+                              << ", <" << P2PComm::getfunc(buf) << ">"
+                              << ", peer: " << peer
+                              << ", message size: " << message.size());
+}
+
 template<typename Container>
 void P2PComm::SendBroadcastMessageHelper(
     const Container& peers, const std::vector<unsigned char>& message)
@@ -810,3 +827,61 @@ void P2PComm::SendBroadcastMessage(const deque<Peer>& peers,
 }
 
 void P2PComm::SetSelfPeer(const Peer& self) { m_selfPeer = self; }
+
+map<string, string> P2PComm::funcMap;
+uint32_t P2PComm::glocalPort = 0;
+
+const string& P2PComm::getfunc(const string& key) {
+
+    if (funcMap.find(key) != funcMap.end()){
+        return P2PComm::funcMap[key];
+    }
+
+    static string UnknownFunc = "UnknownFunc";
+    return UnknownFunc;
+}
+
+void P2PComm::initFuncMap() {
+    funcMap["0-0"] = "PeerManager::ProcessHello";
+    funcMap["0-1"] = "PeerManager::ProcessAddPeer";
+    funcMap["0-2"] = "PeerManager::ProcessPing";
+    funcMap["0-3"] = "PeerManager::ProcessPingAll";
+    funcMap["0-4"] = "PeerManager::ProcessBroadcast";
+    funcMap["1-0"] = "DirectoryService::ProcessSetPrimary";
+    funcMap["1-1"] = "DirectoryService::ProcessPoWSubmission";
+    funcMap["1-2"] = "DirectoryService::ProcessDSBlockConsensus";
+    funcMap["1-3"] = "DirectoryService::ProcessMicroblockSubmission";
+    funcMap["1-4"] = "DirectoryService::ProcessFinalBlockConsensus";
+    funcMap["1-5"] = "DirectoryService::ProcessViewChangeConsensus";
+    funcMap["2-0"] = "Node::ProcessStartPoW";
+    funcMap["2-1"] = "Node::ProcessDSBlock";
+    funcMap["2-2"] = "Node::ProcessCreateTransaction";
+    funcMap["2-3"] = "Node::ProcessSubmitTransaction";
+    funcMap["2-4"] = "Node::ProcessMicroblockConsensus";
+    funcMap["2-5"] = "Node::ProcessFinalBlock";
+    funcMap["2-6"] = "Node::ProcessForwardTransaction";
+    funcMap["2-7"] = "Node::ProcessCreateTransactionFromLookup";
+    funcMap["2-8"] = "Node::ProcessVCBlock";
+    funcMap["2-9"] = "Node::ProcessDoRejoin";
+    funcMap["3-0"] = "ConsensusUser::ProcessSetLeader";
+    funcMap["3-1"] = "ConsensusUser::ProcessStartConsensus";
+    funcMap["3-2"] = "ConsensusUser::ProcessConsensusMessage";
+    funcMap["4-0"] = "Lookup::ProcessGetSeedPeersFromLookup";
+    funcMap["4-1"] = "Lookup::ProcessSetSeedPeersFromLookup";
+    funcMap["4-2"] = "Lookup::ProcessGetDSInfoFromSeed";
+    funcMap["4-3"] = "Lookup::ProcessSetDSInfoFromSeed";
+    funcMap["4-4"] = "Lookup::ProcessGetDSBlockFromSeed";
+    funcMap["4-5"] = "Lookup::ProcessSetDSBlockFromSeed";
+    funcMap["4-6"] = "Lookup::ProcessGetTxBlockFromSeed";
+    funcMap["4-7"] = "Lookup::ProcessSetTxBlockFromSeed";
+    funcMap["4-8"] = "Lookup::ProcessGetTxBodyFromSeed";
+    funcMap["4-9"] = "Lookup::ProcessSetTxBodyFromSeed";
+    funcMap["4-10"] = "Lookup::ProcessGetNetworkId";
+    funcMap["4-11"] = "Lookup::ProcessGetNetworkId";
+    funcMap["4-12"] = "Lookup::ProcessGetStateFromSeed";
+    funcMap["4-13"] = "Lookup::ProcessSetStateFromSeed";
+    funcMap["4-14"] = "Lookup::ProcessSetLookupOffline";
+    funcMap["4-15"] = "Lookup::ProcessSetLookupOnline";
+    funcMap["4-16"] = "Lookup::ProcessGetOfflineLookups";
+    funcMap["4-17"] = "Lookup::ProcessSetOfflineLookups";
+}

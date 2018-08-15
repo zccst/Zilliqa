@@ -46,7 +46,7 @@ void DirectoryService::StoreDSBlockToStorage()
     int result = m_mediator.m_dsBlockChain.AddBlock(*m_pendingDSBlock);
     LOG_EPOCH(
         INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
-        "Storing DS Block Number: "
+        "db_func: Storing DS Block Number: "
             << m_pendingDSBlock->GetHeader().GetBlockNum() << " with Nonce: "
             << m_pendingDSBlock->GetHeader().GetNonce() << ", Difficulty: "
             << to_string(m_pendingDSBlock->GetHeader().GetDifficulty())
@@ -217,8 +217,10 @@ void DirectoryService::UpdateMyDSModeAndConsensusId()
     {
         LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
                   "I am now just a backup DS");
-        LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(),
-                      DS_BACKUP_MSG);
+        LOG_EPOCHINFO(to_string(m_mediator.m_currentEpochNum).c_str(), DS_BACKUP_MSG);
+
+        LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(), DS_BACKUP_MSG);
+
         m_mode = BACKUP_DS;
         m_consensusMyID++;
 
@@ -235,6 +237,9 @@ void DirectoryService::UpdateMyDSModeAndConsensusId()
                   "I am the oldest backup DS -> I am now just a shard node"
                       << "\n"
                       << DS_KICKOUT_MSG);
+
+        LOG_EPOCH(INFO, to_string(m_mediator.m_currentEpochNum).c_str(),
+                  ": " << DS_KICKOUT_MSG);
         m_mode = IDLE;
 
         LOG_STATE("[IDENT][" << setw(15) << left

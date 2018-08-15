@@ -75,6 +75,7 @@ Zilliqa::Zilliqa(const std::pair<PrivKey, PubKey>& key, const Peer& peer,
 {
     LOG_MARKER();
 
+    P2PComm::initFuncMap();
     if (m_mediator.m_isRetrievedHistory)
     {
         m_ds.m_consensusID = 0;
@@ -148,14 +149,24 @@ Zilliqa::Zilliqa(const std::pair<PrivKey, PubKey>& key, const Peer& peer,
 
 Zilliqa::~Zilliqa() {}
 
+//#define DUMP_REMOTE_PORT
 void Zilliqa::Dispatch(const vector<unsigned char>& message, const Peer& from)
 {
     //LOG_MARKER();
 
     if (message.size() >= MessageOffset::BODY)
     {
-        const unsigned char msg_type = message.at(MessageOffset::TYPE);
 
+
+        int offset = 0;
+//        uint32_t remotePeerPort = 0;
+
+#ifdef DUMP_REMOTE_PORT
+        offset = sizeof(uint32_t);
+        remotePeerPort = Serializable::GetNumber<uint32_t>(message, 0, sizeof(uint32_t));
+#endif
+
+        const unsigned char msg_type = message.at(MessageOffset::TYPE + offset);
         Executable* msg_handlers[] = {&m_pm, &m_ds, &m_n, &m_cu, &m_lookup};
 
         const unsigned int msg_handlers_count
@@ -165,24 +176,25 @@ void Zilliqa::Dispatch(const vector<unsigned char>& message, const Peer& from)
         {
 
             LOG_PAYLOAD(INFO, "Message received", message, message.size());
-
-            std::unique_ptr<char[]> payload_string;
+//            std::unique_ptr<char[]> payload_string;
 //            Logger::GetPayloadS(message, message.size(), payload_string);
-            Logger::GetPayloadS(message, 36, payload_string);
+//            Logger::GetPayloadS(message, 36, payload_string);
 //            string msg = payload_string.get();
 //            payload_string = 0;
+//            const unsigned char msg_type = message.at(MessageOffset::TYPE);
 
+            P2PComm::dumpMessage(from, message, offset, "-> recv message_func: ");
 
+#ifdef DUMP_REMOTE_PORT
+            offset = 0;
+            vector<unsigned char> messagecut;
 
-            LOG_GENERAL(INFO, "message-func type: " << (unsigned int)msg_type
-                    << "-" << (unsigned int)message.at(MessageOffset::INST)
-                    << ", from peer: " << from
-                    << ", message size: " << message.size()
-//                    << ", message: " << payload_string.get()
-//                    << "..."
-            );
-            bool result = msg_handlers[msg_type]->Execute(message, MessageOffset::INST, from);
+            messagecut.insert(messagecut.begin(), message.begin() + 4, message.end());
 
+            bool result = msg_handlers[msg_type]->Execute(messagecut, MessageOffset::INST + offset, from);
+#else
+            bool result = msg_handlers[msg_type]->Execute(message, MessageOffset::INST + offset, from);
+#endif
             if (result == false)
             {
                 // To-do: Error recovery
