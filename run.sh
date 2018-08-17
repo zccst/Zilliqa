@@ -1,5 +1,7 @@
 #!/bin/bash
 
+./runlookup.sh $@
+
 ZILLIQA_TOP=$PWD
 NODE_NUM=8
 
@@ -19,10 +21,12 @@ while getopts "n:b" opt; do
   esac
 done
 
-./runlookup.sh -b&
 
 cd build
 $ZILLIQA_TOP/tests/Node/test_node_simple.upd.sh -n $NODE_NUM
 
 cd $ZILLIQA_TOP
 ln -svnf ./build/local_run/node_0001 node01
+
+
+
