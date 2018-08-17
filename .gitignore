@@ -97,3 +97,4 @@ cloud
 common-00001-log.txt
 node01
 test_node_simple.upd.sh
+test_node_lookup.sh

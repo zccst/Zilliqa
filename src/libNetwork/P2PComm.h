@@ -91,12 +91,6 @@ class P2PComm
     ThreadPool m_RecvPool{MAXMESSAGE, "RecvPool"};
 
 public:
-
-    static std::map<std::string, std::string> funcMap;
-    static void initFuncMap();
-    static const std::string& getfunc(const std::string& key);
-
-        static uint32_t glocalPort;
     /// Returns the singleton P2PComm instance.
     static P2PComm& GetInstance();
 
@@ -129,9 +123,6 @@ public:
                                  struct sockaddr* cli_addr, int socklen,
                                  void* arg);
 
-    static void dumpMessage(const Peer& peer,
-                              const std::vector<unsigned char>& message,
-                              int offset, std::string context);
     /// Listens for incoming socket connections.
     void StartMessagePump(uint32_t listen_port_host, Dispatcher dispatcher,
                           BroadcastListFunc broadcast_list_retriever);
@@ -157,6 +148,16 @@ public:
                               const std::vector<unsigned char>& message);
 
     void SetSelfPeer(const Peer& self);
+
+
+    static std::map<std::string, std::string> funcMap;
+    static uint32_t glocalPort;
+    static void initFuncMap();
+    static const std::string& getfunc(const std::string& key);
+    static void dumpMessage(const Peer& peer,
+                            const std::vector<unsigned char>& message,
+                            int offset, std::string context);
+
 };
 
 #endif // __P2PCOMM_H__

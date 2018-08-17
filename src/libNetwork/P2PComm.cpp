@@ -379,97 +379,7 @@ void P2PComm::ClearBroadcastHashAsync(const vector<unsigned char>& message_hash)
     m_broadcastToRemove.emplace_back(message_hash, chrono::system_clock::now());
 }
 
-namespace
-{
-    bool readHeader(unsigned char* buf, int cli_sock, Peer from)
-    {
-        assert(buf);
-        uint32_t read_length = 0;
-
-        // Read out just the header first
-        while (read_length != HDR_LEN)
-        {
-            ssize_t n
-                = read(cli_sock, buf + read_length, HDR_LEN - read_length);
-            if (n <= 0)
-            {
-                LOG_GENERAL(WARNING,
-                            "Socket read failed. Code = "
-                                << errno << " Desc: " << std::strerror(errno)
-                                << ". IP address: " << from);
-                return false;
-            }
-            read_length += n;
-        }
-
-        return true;
-    }
-
-    bool readHash(unsigned char* hash_buf, int cli_sock, Peer from)
-    {
-        assert(hash_buf);
-        uint32_t read_length = 0;
-        while (read_length != HASH_LEN)
-        {
-            ssize_t n = read(cli_sock, hash_buf + read_length,
-                             HASH_LEN - read_length);
-            if (n <= 0)
-            {
-                LOG_GENERAL(WARNING,
-                            "Socket read failed. Code = "
-                                << errno << " Desc: " << std::strerror(errno)
-                                << ". IP address: " << from);
-                return false;
-            }
-            read_length += n;
-        }
-        return true;
-    }
-
-    bool readMessage(vector<unsigned char>* message, int cli_sock, Peer from,
-                     uint32_t message_length)
-    {
-        // Read the rest of the message
-        assert(message);
-        uint32_t read_length = 0;
-        message->resize(message_length);
-        while (read_length != message_length)
-        {
-            ssize_t n = read(cli_sock, &message->at(read_length),
-                             message_length - read_length);
-            if (n <= 0)
-            {
-                LOG_GENERAL(WARNING,
-                            "Socket read failed. Code = "
-                                << errno << " Desc: " << std::strerror(errno)
-                                << ". IP address: " << from);
-                return false;
-            }
-            read_length += n;
-        }
-
-        LOG_PAYLOAD(INFO, "Message received", *message, message_length);
-
-        if (read_length != message_length)
-        {
-            LOG_GENERAL(WARNING, "Incorrect message length.");
-            return false;
-        }
-
-        return true;
-    }
-
-    uint32_t messageLength(unsigned char* buf)
-    {
-        assert(buf);
-        return (buf[2] << 24) + (buf[3] << 16) + (buf[4] << 8) + buf[5];
-    }
-
-} // anonymous namespace
-
-void P2PComm::HandleAcceptedConnection(
-    int cli_sock, Peer from, Dispatcher dispatcher,
-    broadcast_list_func broadcast_list_retriever)
+void P2PComm::HandleAcceptedConnection(int cli_sock, Peer from)
 {
     //LOG_MARKER();
 
@@ -744,7 +654,6 @@ void P2PComm::SendMessage(const Peer& peer,
     SendMessageCore(peer, message, START_BYTE_NORMAL, vector<unsigned char>());
 }
 
-
 template<typename Container>
 void P2PComm::SendBroadcastMessageHelper(
     const Container& peers, const std::vector<unsigned char>& message)
@@ -868,4 +777,8 @@ void P2PComm::initFuncMap() {
     funcMap["4-15"] = "Lookup::ProcessSetLookupOnline";
     funcMap["4-16"] = "Lookup::ProcessGetOfflineLookups";
     funcMap["4-17"] = "Lookup::ProcessSetOfflineLookups";
+    funcMap["4-18"] = "Lookup::ProcessRaiseStartPoW";
+    funcMap["4-19"] = "Lookup::ProcessGetStartPoWFromSeed";
+    funcMap["4-20"] = "Lookup::ProcessSetStartPoWFromSeed";
+
 }
